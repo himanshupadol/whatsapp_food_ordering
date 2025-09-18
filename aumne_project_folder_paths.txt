@@ -1,0 +1,37 @@
+following are the paths of current local folder for updating your memory-
+
+documents\whatsapp_food_ordering\backend
+documents\whatsapp_food_ordering\frontend
+documents\whatsapp_food_ordering\scripts
+documents\whatsapp_food_ordering\sdk
+documents\whatsapp_food_ordering\venv_hp
+documents\whatsapp_food_ordering\.env
+documents\whatsapp_food_ordering\dependencies.txt
+documents\whatsapp_food_ordering\food_ordering.db
+documents\whatsapp_food_ordering\replacements.txt
+documents\whatsapp_food_ordering\.gitignore
+documents\whatsapp_food_ordering\README
+
+
+documents\whatsapp_food_ordering\backend\routes\__init__.py
+documents\whatsapp_food_ordering\backend\routes\menu.py
+documents\whatsapp_food_ordering\backend\routes\orders.py
+documents\whatsapp_food_ordering\backend\tests - empty right now
+documents\whatsapp_food_ordering\backend\__init__.py
+documents\whatsapp_food_ordering\backend\database.py
+documents\whatsapp_food_ordering\backend\main.py
+documents\whatsapp_food_ordering\backend\models.py
+documents\whatsapp_food_ordering\backend\whatsapp_utils.py
+
+documents\whatsapp_food_ordering\frontend\node modules
+documents\whatsapp_food_ordering\frontend\public
+documents\whatsapp_food_ordering\frontend\src
+documents\whatsapp_food_ordering\frontend\.env
+documents\whatsapp_food_ordering\frontend\src\App.js
+documents\whatsapp_food_ordering\frontend\src\App.css
+documents\whatsapp_food_ordering\frontend\src\components\AddMenuForm.js
+documents\whatsapp_food_ordering\frontend\src\components\MenuItem.js
+documents\whatsapp_food_ordering\frontend\src\components\MenuList.js
+documents\whatsapp_food_ordering\frontend\src\pages - empty right now
+documents\whatsapp_food_ordering\frontend\src\services\api.js
+documents\whatsapp_food_ordering\frontend\src\styles - empty right now

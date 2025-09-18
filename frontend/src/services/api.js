@@ -44,4 +44,13 @@ export const updateOrderStatus = async (orderId, data) => {
     return res.data;
 };
 
+export const cancelOrder = async (orderId) => {
+    try {
+        const res = await api.delete(`/orders/${orderId}`);
+        return res.data;
+    } catch (err) {
+        return updateOrderStatus(orderId, { status: "cancelled" });
+    }
+};
+
 export default api;

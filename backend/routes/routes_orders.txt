@@ -1,43 +1,38 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend import models, database, schemas
+from backend import models, database
 from backend.whatsapp_utils import send_whatsapp_message
-from backend.schemas import OrderCreate, OrderRead
-from typing import List
-import json
 
-api_router = APIRouter(prefix = "/orders", tags = ["orders"])
+api_router = APIRouter(prefix = "/orders",
+                       tags = ["orders"])
 
 # for placing order
-@api_router.post("/", response_model=schemas.OrderRead)
-def place_order(order: schemas.OrderCreate, db: Session = Depends(database.get_db)):
-    try:
-        items_json = json.dumps([item.dict() for item in order.items])
+@api_router.post("/")
+def place_order(order: dict, db: Session = Depends(database.get_db)):
 
-        new_order = models.Order(
-            customer_name = order.customer_name,
-            whatsapp_number=order.whatsapp_number,
-            items=items_json,
-            status=order.status,
-            total = order.total
-        )
+    # checking item availability
+    items = db.query(models.MenuItem).filter(models.MenuItem.id.in_(order["items"]))
+    if not items:
+        raise HTTPException(status_code = 400,
+                            detail = "Invalid or unavailable items")
 
-        db.add(new_order)
-        db.commit()
-        db.refresh(new_order)
+    # converting list of item ids to string
+    item_names = ",".join([item.name for item in items])
 
-        item_names = ", ".join([item.name if hasattr(item, "name") else item["name"] for item in order.items])
+    new_order = models.Order(
+        customer_name = order["customer_name"],
+        whatsapp_number = order["whatsapp_number"],
+        items = item_names,
+        status = "pending")
 
-        message = (
-            f"Hi {new_order.customer_name}, your order ({item_names}) "
-            f"has been received. Status: {new_order.status}."
-        )
-        send_whatsapp_message(new_order.whatsapp_number, message)
+    db.add(new_order)
+    db.commit()
+    db.refresh(new_order)
 
-        return new_order
+    message = f"Hi {new_order.customer_name}, your order ({item_names}) has been received. Status: {new_order.status}."
+    send_whatsapp_message(new_order.whatsapp_number, message)
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Order creation failed: {str(e)}")
+    return new_order
 
 # for updating order status
 @api_router.patch("/{order_id}")
@@ -56,16 +51,9 @@ def update_order_status(order_id: int, update: dict, db: Session = Depends(datab
     return {"message":"Order status updated", "order": order}
 
 # listing all orders
-@api_router.get("/", response_model=List[schemas.OrderRead])
+@api_router.get("/")
 def list_orders(db: Session = Depends(database.get_db)):
-    orders = db.query(models.Order).all()
-
-    for order in orders:
-        if isinstance(order.items, str):
-            order.items = json.loads(order.items)
-
-    return orders
-
+    return db.query(models.Order).all()
 
 # search or get orders by order id
 @api_router.get("/{order_id}")
